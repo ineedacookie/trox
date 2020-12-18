@@ -77,6 +77,12 @@ class PersonItem extends Component {
             }
         }
       }
+      for(i in prs){
+                if(!persons[prs[i]].visible && persons[prs[i]].pk != person.pk){
+                    delete persons[prs[i]];
+                    prs.splice(i,1);
+                }
+            }
       this.parent_update_function = props.update_function;
       let full_amount = person.trays * person.rate
       let box = person.trays/type.trays_per_box
@@ -100,6 +106,7 @@ class PersonItem extends Component {
 
    update_database() {
     let person = Object.assign({},this.state.person );
+    let original_pk = person.pk;
     person.pk = this.state.pk
     person.paid = this.state.paid;
     person.trays = this.state.trays;
@@ -107,7 +114,7 @@ class PersonItem extends Component {
     person.bottoms = this.state.bottoms;
     person.shippers = this.state.shippers;
     person.rate = this.state.rate;
-    this.parent_update_function(person);
+    this.parent_update_function(person, original_pk);
     this.setState({person: person, toggled: false});
    }
 
@@ -115,16 +122,20 @@ class PersonItem extends Component {
         this.reset_state();
     }
 
+  remove(){
+    this.parent_update_function(this.state.person, null, true);
+  }
+
   reset_state() {
     let full_amount = this.state.person.trays * this.state.person.rate;
     let box = this.state.person.trays/this.state.type.trays_per_box;
    this.setState({
-               pk: this.state.person,
-               paid: this.state.person,
-               trays: this.state.person,
-               tops: this.state.person,
-               bottoms: this.state.person,
-               rate: this.state.person,
+               pk: this.state.person.pk,
+               paid: this.state.person.paid,
+               trays: this.state.person.trays,
+               tops: this.state.person.tops,
+               bottoms: this.state.person.bottoms,
+               rate: this.state.person.rate,
                full_amount: full_amount,
                box: box,
                toggled: false
@@ -205,29 +216,35 @@ class PersonItem extends Component {
       return (
         <View style={styles.personTouchable}>
             <View style={styles.rowViewPadding}>
-            <Text style={styles.whiteLabel}>Name:</Text>
-            <Picker
-                style={styles.defaultPicker}
-                key={'picker'}
-                testID={'picker'}
-                selectedValue={
-                  this.state.pk > -1
-                    ? this.state.pk
-                    : undefined
-                }
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({pk: itemValue, name: persons[itemValue].name});;
-                }}>
-                {persons_key_list.map((v) => {
-                  if(persons[v].visible){
-                      return (
-                        <Picker.Item label={persons[v].name} value={persons[v].pk} key={persons[v].pk} />
-                      );
-                    } else {
-                        return (null);
+                <View style={{flex:1}}></View>
+                <TouchableOpacity style={styles.removeBtn} onPress={() => this.remove()}>
+                    <Text style={styles.removeText}>Remove</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={styles.rowViewPadding}>
+                <Text style={styles.whiteLabel}>Name:</Text>
+                <Picker
+                    style={styles.defaultPicker}
+                    key={'picker'}
+                    testID={'picker'}
+                    selectedValue={
+                      this.state.pk > -1
+                        ? this.state.pk
+                        : undefined
                     }
-                })}
-              </Picker>
+                    onValueChange={(itemValue, itemIndex) => {
+                      this.setState({pk: itemValue, name: persons[itemValue].name});;
+                    }}>
+                    {persons_key_list.map((v) => {
+                      if(persons[v].visible || persons[v].pk == this.state.person.pk){
+                          return (
+                            <Picker.Item label={persons[v].name} value={persons[v].pk} key={persons[v].pk} />
+                          );
+                        } else {
+                            return (null);
+                        }
+                    })}
+                  </Picker>
             </View>
             <View style={styles.rowViewPadding}>
                 <Text style={styles.whiteLabel}>Pay rate per tray:</Text>
@@ -273,11 +290,11 @@ class PersonItem extends Component {
                 value={this.state.paid}/>
             </View>
             <View style={styles.rowViewSpaceBetween}>
-                <TouchableOpacity style={styles.saveBtn} onPress={() => this.update_database()}>
-                    <Text style={styles.btnText}>Save</Text>
-                </TouchableOpacity>
                 <TouchableOpacity style={styles.cancelBtn} onPress={() => this.cancel()}>
                     <Text style={styles.btnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.saveBtn} onPress={() => this.update_database()}>
+                    <Text style={styles.btnText}>Save</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -102,7 +102,6 @@ export default class TypeScreen extends React.Component {
 
     try{
         let tpb = parseInt(this.state.trays_per_box);
-        console.log(tpb);
         if(tpb <= 0 || isNaN(tpb)){
             err_msg += 'The number of trays per box must be larger than 0\n';
             valid = false;

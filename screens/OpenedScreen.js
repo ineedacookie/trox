@@ -37,10 +37,14 @@ export default class OpenedScreen extends React.Component {
 
 
 
-  add_update_history_item(history){
-      opened = {...this.state.opened};
-      opened[history.pk] = history;
-      setItemInStorage('opened', opened)
+  add_update_history_item(history, remove=false){
+      opened = Object.assign({},this.state.opened);
+      if (!remove){
+          opened[history.pk] = history;
+      } else {
+        delete opened[history.pk];
+      }
+      setItemInStorage('opened', opened);
       this.setState({
           opened: opened
       });

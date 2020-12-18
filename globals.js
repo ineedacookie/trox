@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 export function getOrderedKeys(dict, attribute){
     /** this function goes through a dictionary returns a list of keys after sorting the dictionary by a values name */
+    dict = Object.assign({}, dict);
     if(dict){
         var items = Object.keys(dict).map(function(key) {
           return [key, dict[key]];

@@ -178,6 +178,19 @@ export default StyleSheet.create({
       flex: 1
     },
 
+  removeBtn:{
+    padding: 5,
+    justifyContent: 'center',
+    backgroundColor: red,
+    borderRadius: 4,
+  },
+
+  removeText:{
+    fontSize: small,
+    textAlign: 'center',
+    color: white,
+  },
+
   btnText:{
     fontSize: large,
     textAlign: 'center',

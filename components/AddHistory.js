@@ -131,9 +131,16 @@ class AddHistory extends Component {
        });
   }
 
-   add_update_person_to_history(person){
+   add_update_person_to_history(person, original_pk=null, remove=false){
    let people = Object.assign({},this.state.people);
-   people[person.pk] = person;
+   if (!remove){
+       if(original_pk){
+        delete people[original_pk];
+       }
+       people[person.pk] = person;
+   } else {
+       delete people[person.pk]
+   }
    this.setState({
        people: people
    });
@@ -183,6 +190,9 @@ class AddHistory extends Component {
     if (this.state.toggled){
         /** These variables are in charge of alternating between the table colors */
         let people = Object.assign({},this.state.people);
+        for(let i in people){
+            people[i].name = this.state.persons[i].name;
+        }
         let key_list = getOrderedKeys(people, 'name');
         /** Use map each employee to their own entry line for the final object */
         let people_persons = key_list.map((val, key) => {
@@ -264,11 +274,11 @@ class AddHistory extends Component {
                 {people_persons}
             </View>
             <View style={styles.rowViewSpaceBetween}>
-                <TouchableOpacity style={styles.saveBtn} onPress={() => this.add_history_to_database()}>
-                    <Text style={styles.btnText}>Save Project</Text>
-                </TouchableOpacity>
                 <TouchableOpacity style={styles.cancelBtn} onPress={() => this.cancel()}>
                     <Text style={styles.btnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.saveBtn} onPress={() => this.add_history_to_database()}>
+                    <Text style={styles.btnText}>Save Project</Text>
                 </TouchableOpacity>
             </View>
           </View>

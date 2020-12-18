@@ -30,9 +30,16 @@ class HistoryItem extends Component {
       };
     }
 
-   add_update_person_to_history(person){
+   add_update_person_to_history(person, original_pk=null, remove=false){
     let people = Object.assign({},this.state.people);
-    people[person.pk] = person;
+    if (!remove){
+        if(original_pk){
+         delete people[original_pk];
+        }
+        people[person.pk] = person;
+    } else {
+        delete people[person.pk]
+    }
     this.setState({
         people: people
     });
@@ -96,6 +103,10 @@ class HistoryItem extends Component {
     });
    }
 
+   remove(){
+       this.parent_update_history_item(this.state.item, true);
+     }
+
   return_tray_stats(){
     if(!isNaN(this.state.required_trays) || this.state.required_trays > 0){
         let total_finished_trays = 0;
@@ -141,12 +152,15 @@ class HistoryItem extends Component {
     /** These variables are in charge of alternating between the table colors */
     if (this.state.toggled){
         let people = Object.assign({},this.state.people);
+        for(let i in people){
+            people[i].name = this.persons[i].name;
+        }
         let key_list = getOrderedKeys(people, 'name');
         /** Use map each employee to their own entry line for the final object */
         let people_persons = key_list.map((val, key) => {
             return(
                 <PersonItem
-                    person={people[val]}
+                    person={this.state.people[val]}
                     type={this.state.hist_type}
                     update_function={this.add_update_person_to_history.bind(this)}
                     persons={this.persons}
@@ -158,6 +172,12 @@ class HistoryItem extends Component {
         let type = this.type;
         return (
           <View style={styles.historyTouchable}>
+          <View style={styles.rowViewPadding}>
+              <View style={{flex:1}}></View>
+              <TouchableOpacity style={styles.removeBtn} onPress={() => this.remove()}>
+                  <Text style={styles.removeText}>Delete</Text>
+              </TouchableOpacity>
+          </View>
           <View style={styles.rowViewPadding}>
             <Text style={styles.whiteLabel}>Project Type:</Text>
             <Picker
@@ -173,7 +193,7 @@ class HistoryItem extends Component {
                   this.setState({type_pk: itemValue, hist_type: this.type[itemValue]});
                 }}>
                 {type_key_list.map((v) => {
-                    if(type[v].visible){
+                    if(type[v].visible || type[v].pk == this.state.item.type_pk){
                       return (
                         <Picker.Item label={type[v].name} value={type[v].pk} key={type[v].pk} />
                       );
@@ -222,11 +242,11 @@ class HistoryItem extends Component {
                 {people_persons}
             </View>
             <View style={styles.rowViewSpaceBetween}>
-                <TouchableOpacity style={styles.saveBtn} onPress={() => this.update_history_item()}>
-                    <Text style={styles.btnText}>Save Project</Text>
-                </TouchableOpacity>
                 <TouchableOpacity style={styles.cancelBtn} onPress={() => this.cancel()}>
                     <Text style={styles.btnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.saveBtn} onPress={() => this.update_history_item()}>
+                    <Text style={styles.btnText}>Save Project</Text>
                 </TouchableOpacity>
             </View>
           </View>

@@ -74,6 +74,12 @@ class NewPerson extends Component {
                   }
               }
             }
+          for(i in prs){
+              if(!persons[prs[i]].visible){
+                  delete persons[prs[i]];
+                  prs.splice(i,1);
+              }
+          }
           let persons_key_list = getOrderedKeys(persons, 'name');
           if(persons_key_list.length > 0){
               this.parent_add_function = props.add_function;
@@ -225,7 +231,6 @@ class NewPerson extends Component {
                   this.setState({pk: itemValue});
                 }}>
                 {persons_key_list.map((v) => {
-                  console.log(persons[v].visible);
                   if(persons[v].visible){
                     return (
                       <Picker.Item label={persons[v].name} value={persons[v].pk} key={persons[v].pk} />
@@ -280,11 +285,11 @@ class NewPerson extends Component {
                 value={this.state.paid}/>
             </View>
             <View style={styles.rowViewSpaceBetween}>
-                <TouchableOpacity style={styles.saveBtn} onPress={() => this.add_to_history_database()}>
-                    <Text style={styles.btnText}>Save</Text>
-                </TouchableOpacity>
                 <TouchableOpacity style={styles.cancelBtn} onPress={() => this.cancel()}>
                     <Text style={styles.btnText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.saveBtn} onPress={() => this.add_to_history_database()}>
+                    <Text style={styles.btnText}>Save</Text>
                 </TouchableOpacity>
             </View>
         </View>
