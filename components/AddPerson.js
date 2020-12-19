@@ -220,6 +220,7 @@ class NewPerson extends Component {
         return(<View style={styles.rowViewPadding}>
                <Text style={styles.whiteLabel}>Name:</Text>
                <DropDownPicker
+                   searchable={false}
                    containerStyle={styles.dropdownContainerStyle}
                    items={picker_items}
                    style={styles.defaultPicker}

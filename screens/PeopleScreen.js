@@ -54,6 +54,7 @@ export default class PeopleScreen extends React.Component {
     return(
         <View style={styles.rowViewPadding}>
         <DropDownPicker
+            searchable={false}
             containerStyle={styles.dropdownContainerStyle}
             items={picker_items}
             style={styles.defaultPicker}

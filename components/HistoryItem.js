@@ -166,6 +166,7 @@ class HistoryItem extends Component {
         return(<View style={styles.rowViewPadding}>
                <Text style={styles.whiteLabel}>Project Type:</Text>
                <DropDownPicker
+                   searchable={false}
                    containerStyle={styles.dropdownContainerStyle}
                    items={picker_items}
                    style={styles.defaultPicker}
