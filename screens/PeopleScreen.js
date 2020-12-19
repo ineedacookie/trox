@@ -46,13 +46,11 @@ export default class PeopleScreen extends React.Component {
   create_picker() {
     let person_key_list = getOrderedKeys(this.state.persons, 'name');
     let persons = this.state.persons;
-    console.log(persons);
     let picker_items = [{label: 'Create New Person', value:-1}];
     for(let i in person_key_list){
         let item = persons[person_key_list[i]];
         picker_items.push({label: item.name, value:item.pk});
     }
-    console.log(picker_items);
     return(
         <View style={styles.rowViewPadding}>
         <DropDownPicker

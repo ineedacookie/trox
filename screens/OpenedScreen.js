@@ -72,7 +72,7 @@ export default class OpenedScreen extends React.Component {
          });
       return (
         <ScrollView keyboardShouldPersistTaps='always' style={styles.scrollView}>
-          <View style={styles.ScrollView}>
+          <View style={styles.scrollView}>
               <AddHistory
               type={this.state.type}
               persons={this.state.persons}

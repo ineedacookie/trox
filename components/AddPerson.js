@@ -31,8 +31,6 @@ class NewPerson extends Component {
             }
         }
       let persons_key_list = getOrderedKeys(persons, 'name');
-      console.log(persons);
-      console.log(persons_key_list);
       if(persons_key_list.length > 0){
           this.parent_add_function = props.add_function;
           this.state = {

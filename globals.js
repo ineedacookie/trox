@@ -83,21 +83,26 @@ export async function setItemInStorage(itemString, new_item) {
 }
 
 export function build_display_date(in_date) {
-  let day = in_date.getDate();
-  if(day < 10) {
-    day = '0' + day.toString();
-  } else {
-    day = day.toString();
-  }
-  let month = in_date.getMonth() + 1;
-  if(month < 10){
-    month = '0' + month.toString()
-  } else if (month > 13) {
-    month = '01'
-  } else {
-    month = month.toString()
-  }
+  if(in_date){
+      console.log(in_date);
+      let day = in_date.getDate();
+      if(day < 10) {
+        day = '0' + day.toString();
+      } else {
+        day = day.toString();
+      }
+      let month = in_date.getMonth() + 1;
+      if(month < 10){
+        month = '0' + month.toString()
+      } else if (month > 13) {
+        month = '01'
+      } else {
+        month = month.toString()
+      }
 
-  let year = in_date.getFullYear();
-  return month + '-' + day + '-' + year.toString();
+      let year = in_date.getFullYear();
+      return month + '-' + day + '-' + year.toString();
+  } else {
+    return(in_date);
+  }
 }

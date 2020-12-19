@@ -17,7 +17,7 @@
     "async-storage": "^0.1.0",
     "react": "16.13.1",
     "react-native": "0.63.4",
-    "react-native-datepicker": "^1.7.2",
+    "react-native-daterange-picker": "^1.5.1",
     "react-native-dropdown-picker": "^3.7.1",
     "react-native-gesture-handler": "^1.9.0",
     "react-native-reanimated": "^1.13.2",

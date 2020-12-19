@@ -45,7 +45,7 @@ export default StyleSheet.create({
     padding: 10,
     margin: 10,
     backgroundColor: dark_blue,
-    flex: 1
+    zIndex: 1,
   },
 
   rowHistoryTouchable: {
@@ -89,6 +89,11 @@ export default StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
+
+  frontCenterView:{
+      zIndex: 999999,
+      justifyContent: 'center',
+    },
 
   centerView: {
     alignItems: 'center',
@@ -185,6 +190,13 @@ export default StyleSheet.create({
     borderRadius: 4,
   },
 
+  simpleBtn:{
+      padding: 5,
+      justifyContent: 'center',
+      backgroundColor: gray_blue,
+      borderRadius: 4,
+    },
+
   removeText:{
     fontSize: small,
     textAlign: 'center',
@@ -272,6 +284,17 @@ export default StyleSheet.create({
   dropdownContainerStyle:{
     height: 40,
     flex: 1,
-  }
+  },
+
+  backdrop:{
+      backgroundColor: "rgba(0,0,0,0.0)",
+      position: "relative",
+      flex:1,
+      width: 'auto',
+      height: 'auto',
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 2147483647,
+    }
 
 });

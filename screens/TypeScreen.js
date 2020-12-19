@@ -57,7 +57,6 @@ export default class TypeScreen extends React.Component {
         let item = type[type_key_list[i]];
         picker_items.push({label: item.name, value:item.pk, icon: null});
     }
-    console.log(picker_items);
     return(
         <View style={styles.rowViewPadding}>
         <DropDownPicker

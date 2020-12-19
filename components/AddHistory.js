@@ -1,7 +1,8 @@
+import moment from "moment";
 import DropDownPicker from 'react-native-dropdown-picker';
+import DateRangePicker from "react-native-daterange-picker";
 import React, {Component} from 'react';
 import {View, TouchableOpacity, Text, TextInput} from 'react-native';
-import DatePicker from 'react-native-datepicker'
 import {build_display_date, getOrderedKeys} from '../globals';
 import PersonItem from './PersonItem';
 import NewPerson from './AddPerson';
@@ -13,7 +14,6 @@ class AddHistory extends Component {
       super(props);
       let {type} = props;
       let {persons} = props;
-      let today = build_display_date(new Date());
       let timestamp = Date.now();
       let type_key_list = getOrderedKeys(type, 'name');
       this.parent_add_update_history_item = props.add_update_history_item;
@@ -21,9 +21,9 @@ class AddHistory extends Component {
           this.state = {
               pk: timestamp,
               people: {},
-              start_date: today,
-              end_date: today,
-              required_trays: 0,
+              startDate: null,
+              endDate: null,
+              required_trays: 1,
               type_pk: type[type_key_list[0]].pk,
               type: type,
               hist_type: type[type_key_list[0]],
@@ -31,6 +31,8 @@ class AddHistory extends Component {
               show: true,
               persons: persons,
               err_msg: '',
+              displayedDate: moment(),
+              opened_calendar: false,
           };
       } else {
         this.state = {
@@ -43,7 +45,6 @@ class AddHistory extends Component {
     componentWillReceiveProps(props){
         let {type} = props;
           let {persons} = props;
-          let today = build_display_date(new Date());
           let timestamp = Date.now();
           let type_key_list = getOrderedKeys(type, 'name');
           this.parent_add_update_history_item = props.add_update_history_item;
@@ -51,13 +52,14 @@ class AddHistory extends Component {
               this.setState({
                   pk: timestamp,
                   people: {},
-                  start_date: today,
-                  end_date: today,
-                  required_trays: 0,
+                  startDate: null,
+                  endDate: null,
+                  required_trays: 1,
                   type_pk: type[type_key_list[0]].pk,
                   type: type,
                   hist_type: type[type_key_list[0]],
                   toggled: false,
+                  opened_calendar: false,
                   show: true,
                   err_msg: '',
                   persons: persons
@@ -69,6 +71,12 @@ class AddHistory extends Component {
             });
           }
 
+    }
+
+    setDates = (dates) => {
+        this.setState({
+            ...dates
+        });
     }
 
     validate(){
@@ -90,8 +98,8 @@ class AddHistory extends Component {
            let history = {
                pk: this.state.pk,
                people: this.state.people,
-               start_date: this.state.start_date,
-               end_date: this.state.end_date,
+               startDate: this.state.startDate,
+               endDate: this.state.endDate,
                type_pk: this.state.type_pk,
                required_trays: this.state.required_trays
            };
@@ -102,12 +110,13 @@ class AddHistory extends Component {
            this.setState({
                 pk: timestamp,
                 people: {},
-                start_date: today,
-                end_date: today,
-                required_trays: 0,
+                startDate: today,
+                endDate: today,
+                required_trays: 1,
                 type_pk: type[type_key_list[0]].pk,
                 hist_type: type[type_key_list[0]],
-                toggled: false
+                toggled: false,
+                opened_calendar: false
            });
            this.parent_add_update_history_item(history);
        }
@@ -121,13 +130,14 @@ class AddHistory extends Component {
        this.setState({
             pk: timestamp,
             people: {},
-            start_date: today,
-            end_date: today,
-            required_trays: 0,
+            startDate: today,
+            endDate: today,
+            required_trays: 1,
             type_pk: type[type_key_list[0]].pk,
             hist_type: type[type_key_list[0]],
             err_msg: '',
-            toggled: false
+            toggled: false,
+            opened_calendar: false
        });
   }
 
@@ -215,6 +225,32 @@ class AddHistory extends Component {
     }
   }
 
+  create_calendar() {
+    let calendar_btn_text = 'Set Date Range';
+    let display_date = null;
+    if(this.state.opened_calendar){
+        calendar_btn_text = 'Submit Date Range';
+    } else if(this.state.startDate && this.state.endDate) {
+        display_date = this.state.startDate.toString().slice(4, 15) + ' to ' + this.state.endDate.toString().slice(4,15);
+    }
+    return(
+    <View>
+    <DateRangePicker
+        backdropStyle={styles.backdrop}
+        open={this.state.opened_calendar}
+        onChange={this.setDates}
+        startDate={this.state.startDate}
+        endDate={this.state.endDate}
+        displayedDate={this.state.displayedDate}
+        range>
+        <Text style={styles.flexOneWhiteLabel}>{display_date}</Text>
+    </DateRangePicker>
+    <TouchableOpacity style={styles.simpleBtn} onPress={() => {this.setState({opened_calendar: !this.state.opened_calendar})}}>
+        <Text style={styles.removeText} >{calendar_btn_text}</Text>
+    </TouchableOpacity>
+    </View>)
+  }
+
   render() {
     if (this.state.toggled){
         /** These variables are in charge of alternating between the table colors */
@@ -246,25 +282,7 @@ class AddHistory extends Component {
                 value={this.reStr(this.state.required_trays)}/>
             </View>
             {this.return_error_msg()}
-            <View style={styles.centerView}>
-                <View style={styles.datePickerView}>
-                    <DatePicker
-                        style={styles.datePicker}
-                        date={this.state.start_date}
-                        mode="date"
-                        placeholders="start date"
-                        format="MM-DD-YYYY"
-                        onDateChange={(date) => {this.setState({start_date: date})}}/>
-                    <Text style={styles.whiteTo}>To</Text>
-                    <DatePicker
-                        style={styles.datePicker}
-                        date={this.state.end_date}
-                        mode="date"
-                        placeholders="start date"
-                        format="MM-DD-YYYY"
-                        onDateChange={(date) => {this.setState({end_date: date})}}/>
-                </View>
-            </View>
+            {this.create_calendar()}
             <View style={styles.rowViewPadding}></View>
             {this.return_tray_stats()}
             <View style={styles.rowViewPadding}></View>
