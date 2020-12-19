@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Picker} from '@react-native-community/picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import {View, TouchableOpacity, Text, TextInput} from 'react-native';
 import {getOrderedKeys} from '../globals';
 import Checkbox from '@react-native-community/checkbox';
@@ -207,12 +207,39 @@ class PersonItem extends Component {
     this.setState({paid: val})
   }
 
+  create_picker(){
+    let persons = this.state.persons;
+    let persons_key_list = getOrderedKeys(this.state.persons, 'name');
+    let picker_items = [];
+    for(let i in persons_key_list){
+        let item = persons[persons_key_list[i]];
+        if(item.visible || item.pk == this.state.person.pk){
+            picker_items.push({label: item.name, value:item.pk});
+        }
+    }
+    if(picker_items.length > 0){
+    return(
+        <View style={styles.rowViewPadding}>
+            <Text style={styles.whiteLabel}>Name:</Text>
+            <DropDownPicker
+                containerStyle={styles.dropdownContainerStyle}
+                items={picker_items}
+                style={styles.defaultPicker}
+                defaultValue={this.state.pk}
+                onChangeItem={(item) => {
+                  this.setState({pk: item.value, name: persons[item.value].name});
+                }}>
+              </DropDownPicker>
+        </View>);
+    } else {
+        return(null);
+    }
+  }
+
   render() {
     /** These variables are in charge of alternating between the table colors */
     let full_amount = this.state.trays * this.state.rate
     if (this.state.toggled){
-        let persons_key_list = getOrderedKeys(this.state.persons, 'name');
-        let persons = this.state.persons;
       return (
         <View style={styles.personTouchable}>
             <View style={styles.rowViewPadding}>
@@ -221,31 +248,7 @@ class PersonItem extends Component {
                     <Text style={styles.removeText}>Remove</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.rowViewPadding}>
-                <Text style={styles.whiteLabel}>Name:</Text>
-                <Picker
-                    style={styles.defaultPicker}
-                    key={'picker'}
-                    testID={'picker'}
-                    selectedValue={
-                      this.state.pk > -1
-                        ? this.state.pk
-                        : undefined
-                    }
-                    onValueChange={(itemValue, itemIndex) => {
-                      this.setState({pk: itemValue, name: persons[itemValue].name});;
-                    }}>
-                    {persons_key_list.map((v) => {
-                      if(persons[v].visible || persons[v].pk == this.state.person.pk){
-                          return (
-                            <Picker.Item label={persons[v].name} value={persons[v].pk} key={persons[v].pk} />
-                          );
-                        } else {
-                            return (null);
-                        }
-                    })}
-                  </Picker>
-            </View>
+            {this.create_picker()}
             <View style={styles.rowViewPadding}>
                 <Text style={styles.whiteLabel}>Pay rate per tray:</Text>
                 <TextInput style={styles.defaultPicker} onChangeText={(val) => {this.set_rate(val)}}

@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {View, TouchableOpacity, Text, TextInput} from 'react-native';
 import {getOrderedKeys} from '../globals';
-import {Picker} from '@react-native-community/picker';
-import DatePicker from 'react-native-datepicker'
+import DropDownPicker from 'react-native-dropdown-picker'
+import DatePicker from 'react-native-datepicker';
 import PersonItem from './PersonItem';
 import NewPerson from './AddPerson';
 import styles from '../styles/styles';
@@ -147,6 +147,34 @@ class HistoryItem extends Component {
       }
     }
 
+  create_picker(){
+    let type_key_list = getOrderedKeys(this.type, 'name');
+    let type = this.type;
+    let picker_items = [];
+    for(let i in type_key_list){
+        let item = type[type_key_list[i]];
+        if(item.visible || item.pk == this.state.item.type_pk){
+            picker_items.push({label: item.name, value:item.pk});
+        }
+    }
+    if(picker_items.length > 0){
+        return(<View style={styles.rowViewPadding}>
+               <Text style={styles.whiteLabel}>Project Type:</Text>
+               <DropDownPicker
+                   containerStyle={styles.dropdownContainerStyle}
+                   items={picker_items}
+                   style={styles.defaultPicker}
+                   defaultValue={this.state.type_pk}
+                   onChangeItem={(item) => {
+                     this.setState({type_pk: item.value, hist_type: this.state.type[item.value]});
+                   }}>
+                 </DropDownPicker>
+               </View>);
+    } else {
+        return(null);
+    }
+  }
+
 
   render() {
     /** These variables are in charge of alternating between the table colors */
@@ -168,8 +196,7 @@ class HistoryItem extends Component {
                     key={key}/>
             );
         });
-        let type_key_list = getOrderedKeys(this.type, 'name');
-        let type = this.type;
+
         return (
           <View style={styles.historyTouchable}>
           <View style={styles.rowViewPadding}>
@@ -178,31 +205,7 @@ class HistoryItem extends Component {
                   <Text style={styles.removeText}>Delete</Text>
               </TouchableOpacity>
           </View>
-          <View style={styles.rowViewPadding}>
-            <Text style={styles.whiteLabel}>Project Type:</Text>
-            <Picker
-                style={styles.defaultPicker}
-                key={'picker'}
-                testID={'picker'}
-                selectedValue={
-                  this.state.type_pk > -1
-                    ? this.state.type_pk
-                    : undefined
-                }
-                onValueChange={(itemValue, itemIndex) => {
-                  this.setState({type_pk: itemValue, hist_type: this.type[itemValue]});
-                }}>
-                {type_key_list.map((v) => {
-                    if(type[v].visible || type[v].pk == this.state.item.type_pk){
-                      return (
-                        <Picker.Item label={type[v].name} value={type[v].pk} key={type[v].pk} />
-                      );
-                    } else {
-                        return (null);
-                    }
-                })}
-              </Picker>
-            </View>
+            {this.create_picker()}
             <View style={styles.rowViewPadding}>
                 <Text style={styles.whiteLabel}>Trays Required:</Text>
                 <TextInput style={styles.flexOneInputMargin} onChangeText={(val) => {this.setState({required_trays: parseInt(val.replace(/[^0-9]/g, ''))});}}

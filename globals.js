@@ -42,13 +42,13 @@ export async function getItemFromStorage(itemString) {
     item = (await AsyncStorage.getItem(itemString)) || '{}';
     if(itemString == 'type' && item == '{}'){
         item = {
-            1: {pk: 1, name: 'short', normal_rate: 0.20, trays_per_box: 450, visible: true}
+            1: {pk: 1, name: 'Short', normal_rate: 0.20, trays_per_box: 450, visible: true}
         };
         await setItemInStorage(itemString, item);
         return (item);
     }else if(itemString == 'persons' && item == '{}'){
             item = {
-                1: {pk: 1, name: 'dax', visible: true}
+                1: {pk: 1, name: 'Dax', visible: true}
             };
             await setItemInStorage(itemString, item);
             return (item);

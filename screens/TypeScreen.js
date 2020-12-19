@@ -1,5 +1,5 @@
 import React from 'react';
-import {Picker} from '@react-native-community/picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import {View, TouchableOpacity, Text, TextInput, ActivityIndicator, ScrollView} from 'react-native';
 import {getItemFromStorage, setItemInStorage, getOrderedKeys} from '../globals';
 import styles from '../styles/styles';
@@ -52,29 +52,23 @@ export default class TypeScreen extends React.Component {
   create_picker() {
     let type_key_list = getOrderedKeys(this.state.type, 'name');
     let type = this.state.type;
+    let picker_items = [{label:'Create New Type', value:-1, icon: null}];
+    for(let i in type_key_list){
+        let item = type[type_key_list[i]];
+        picker_items.push({label: item.name, value:item.pk, icon: null});
+    }
+    console.log(picker_items);
     return(
         <View style={styles.rowViewPadding}>
-        <Picker
-          style={styles.defaultPicker}
-          key={'picker'}
-          testID={'picker'}
-          selectedValue={this.state.type_pk}
-          onValueChange={(itemValue, itemIndex) => {
-            this.pickerChanged(itemValue);
-          }}>
-          {this.create_default_picker_item()}
-          {type_key_list.map((v) => {
-            return (
-              <Picker.Item label={type[v].name} value={type[v].pk} key={type[v].pk} />
-            );
-          })}
-        </Picker>
+        <DropDownPicker
+            containerStyle={styles.dropdownContainerStyle}
+            items={picker_items}
+            style={styles.defaultPicker}
+            defaultValue={this.state.type_pk}
+            onChangeItem={(item) => {this.pickerChanged(item.value)}}>
+          </DropDownPicker>
         </View>
     )
-  }
-
-  create_default_picker_item() {
-    return (<Picker.Item label='Create New Type' value='-1' key='new'/>)
   }
 
   // TODO CREATE delete function logic

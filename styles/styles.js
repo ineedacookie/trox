@@ -267,6 +267,11 @@ export default StyleSheet.create({
     textAlign: 'center',
     fontSize: medium,
     color: white,
+  },
+
+  dropdownContainerStyle:{
+    height: 40,
+    flex: 1,
   }
 
 });

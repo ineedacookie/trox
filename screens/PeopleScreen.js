@@ -1,5 +1,5 @@
 import React from 'react';
-import {Picker} from '@react-native-community/picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import {View, TouchableOpacity, Text, TextInput, ActivityIndicator, ScrollView} from 'react-native';
 import {getItemFromStorage, setItemInStorage, getOrderedKeys} from '../globals';
 import styles from '../styles/styles';
@@ -46,29 +46,24 @@ export default class PeopleScreen extends React.Component {
   create_picker() {
     let person_key_list = getOrderedKeys(this.state.persons, 'name');
     let persons = this.state.persons;
+    console.log(persons);
+    let picker_items = [{label: 'Create New Person', value:-1}];
+    for(let i in person_key_list){
+        let item = persons[person_key_list[i]];
+        picker_items.push({label: item.name, value:item.pk});
+    }
+    console.log(picker_items);
     return(
         <View style={styles.rowViewPadding}>
-        <Picker
-          style={styles.defaultPicker}
-          key={'picker'}
-          testID={'picker'}
-          selectedValue={this.state.person_pk}
-          onValueChange={(itemValue, itemIndex) => {
-            this.pickerChanged(itemValue);
-          }}>
-          {this.create_default_picker_item()}
-          {person_key_list.map((v) => {
-            return (
-              <Picker.Item label={persons[v].name} value={persons[v].pk} key={persons[v].pk} />
-            );
-          })}
-        </Picker>
+        <DropDownPicker
+            containerStyle={styles.dropdownContainerStyle}
+            items={picker_items}
+            style={styles.defaultPicker}
+            defaultValue={this.state.person_pk}
+            onChangeItem={(item) => {this.pickerChanged(item.value)}}>
+          </DropDownPicker>
         </View>
     )
-  }
-
-  create_default_picker_item() {
-    return (<Picker.Item label='Create New Person' value='-1' key='newPerson'/>)
   }
 
   validate(){
