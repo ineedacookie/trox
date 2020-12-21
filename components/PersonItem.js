@@ -219,9 +219,10 @@ class PersonItem extends Component {
     }
     if(picker_items.length > 0){
     return(
-        <View style={styles.rowViewPadding}>
+        <View style={styles.frontRowViewPadding}>
             <Text style={styles.whiteLabel}>Name:</Text>
             <DropDownPicker
+                dropDownStyle={styles.dropdownRelative}
                 searchable={false}
                 containerStyle={styles.dropdownContainerStyle}
                 items={picker_items}

@@ -52,8 +52,9 @@ export default class PeopleScreen extends React.Component {
         picker_items.push({label: item.name, value:item.pk});
     }
     return(
-        <View style={styles.rowViewPadding}>
+        <View style={styles.frontRowViewPadding}>
         <DropDownPicker
+            dropDownStyle={styles.dropdownRelative}
             searchable={false}
             containerStyle={styles.dropdownContainerStyle}
             items={picker_items}

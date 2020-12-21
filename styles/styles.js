@@ -127,16 +127,25 @@ export default StyleSheet.create({
         textAlign: 'right',
       },
 
-  rowViewPadding: {
+  frontRowViewPadding: {
     flexDirection: 'row',
     justifyContent: 'center',
     paddingBottom: 20,
+    zIndex: 1000,
   },
+
+  rowViewPadding: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      paddingBottom: 20,
+      zIndex: 1,
+    },
 
   defaultPicker: {
     backgroundColor: light_green,
     borderRadius: 4,
     flex: 1,
+    zIndex: -9999,
   },
   rowView: {
     flexDirection: 'row',
@@ -242,6 +251,7 @@ export default StyleSheet.create({
       marginLeft: 20,
       marginRight: 20,
       borderRadius: 4,
+      zIndex: 0,
     },
 
   rowViewSpaceBetween:{
@@ -282,8 +292,12 @@ export default StyleSheet.create({
   },
 
   dropdownContainerStyle:{
-    height: 40,
+    minHeight: 40,
     flex: 1,
+  },
+
+  dropdownRelative:{
+    position: 'absolute',
   },
 
   backdrop:{

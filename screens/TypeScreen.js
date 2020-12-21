@@ -58,8 +58,9 @@ export default class TypeScreen extends React.Component {
         picker_items.push({label: item.name, value:item.pk, icon: null});
     }
     return(
-        <View style={styles.rowViewPadding}>
+        <View style={styles.frontRowViewPadding}>
         <DropDownPicker
+            dropDownStyle={styles.dropdownRelative}
             searchable={false}
             containerStyle={styles.dropdownContainerStyle}
             items={picker_items}
