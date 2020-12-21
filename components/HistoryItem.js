@@ -22,6 +22,8 @@ class HistoryItem extends Component {
           people: item.people,
           startDate: new Date(item.startDate),
           endDate: new Date(item.endDate),
+          tops: item.tops,
+          bottoms: item.bottoms,
           type_pk: item.type_pk,
           required_trays: item.required_trays,
           item: item,
@@ -59,6 +61,8 @@ class HistoryItem extends Component {
           people: item.people,
           startDate: new Date(item.startDate),
           endDate: new Date(item.endDate),
+          tops: item.tops,
+          bottoms: item.bottoms,
           type_pk: item.type_pk,
           required_trays: item.required_trays,
           item: item,
@@ -88,6 +92,8 @@ class HistoryItem extends Component {
         item.people = this.state.people;
         item.startDate = this.state.startDate;
         item.endDate = this.state.endDate;
+        item.tops = this.state.tops;
+        item.bottoms = this.state.bottoms;
         item.type_pk = this.state.type_pk;
         item.required_trays = this.state.required_trays;
         this.setState({item:item, toggled: false, opened_calendar: false});
@@ -98,8 +104,10 @@ class HistoryItem extends Component {
    cancel() {
     this.setState({
         people: this.state.item.people,
-        startDate: this.state.item.startDate,
-        endDate: this.state.item.endDate,
+        startDate: new Date(this.state.item.startDate),
+        endDate: new Date(this.state.item.endDate),
+        tops: this.state.item.tops,
+        bottoms: this.state.item.bottoms,
         type_pk: this.state.item.type_pk,
         required_trays: this.state.item.required_trays,
         err_msg: '',
@@ -113,26 +121,54 @@ class HistoryItem extends Component {
      }
 
   return_tray_stats(){
-    if(!isNaN(this.state.required_trays) || this.state.required_trays > 0){
-        let total_finished_trays = 0;
-        let people = this.state.people;
-        for(let i in people){
-            total_finished_trays += people[i].trays;
-        }
-        let percentage = Math.round(total_finished_trays/this.state.required_trays * 100).toString()
-        return(
-            <View style={styles.rowViewSpaceBetween}>
-                <Text style={styles.smallerWhiteLabel}>Progress:</Text>
-                <View style={styles.rowViewStats}>
-                    <Text style={styles.smallerWhiteLabel}>{total_finished_trays.toString()}/{this.state.required_trays.toString()}</Text>
-                    <Text style={styles.smallerRightWhiteLabel}>{percentage}%</Text>
-                </View>
-            </View>
-        );
-    } else {
-        return(null);
-    }
-  }
+            if(!isNaN(this.state.required_trays) || this.state.required_trays > 0){
+                let total_finished_trays = 0;
+                let total_dist_tops = 0;
+                let total_dist_bottoms = 0;
+                let people = this.state.people;
+                for(let i in people){
+                    total_finished_trays += people[i].trays;
+                    total_dist_tops += people[i].tops;
+                    total_dist_bottoms += people[i].bottoms;
+                }
+                let tray_percentage = Math.round(total_finished_trays/this.state.required_trays * 100).toString();
+                let tops_percentage = 0;
+                let bottoms_percentage = 0;
+                if(this.state.tops > 0){
+                    tops_percentage = Math.round(total_dist_tops/this.state.tops * 100).toString();
+                }
+                if(this.state.bottoms > 0){
+                    bottoms_percentage = Math.round(total_dist_bottoms/this.state.bottoms * 100).toString();
+                }
+                return(
+                    <View>
+                        <View style={styles.rowViewSpaceBetween}>
+                            <Text style={styles.smallerWhiteLabel}>Tops Distributed:</Text>
+                            <View style={styles.rowViewStats}>
+                                <Text style={styles.smallerWhiteLabel}>{total_dist_tops.toString()}/{this.reStr(this.state.tops)}</Text>
+                                <Text style={styles.smallerRightWhiteLabel}>{tops_percentage}%</Text>
+                            </View>
+                        </View>
+                        <View style={styles.rowViewSpaceBetween}>
+                            <Text style={styles.smallerWhiteLabel}>Bottoms Distributed:</Text>
+                            <View style={styles.rowViewStats}>
+                                <Text style={styles.smallerWhiteLabel}>{total_dist_bottoms.toString()}/{this.reStr(this.state.bottoms)}</Text>
+                                <Text style={styles.smallerRightWhiteLabel}>{bottoms_percentage}%</Text>
+                            </View>
+                        </View>
+                        <View style={styles.rowViewSpaceBetween}>
+                            <Text style={styles.smallerWhiteLabel}>Progress:</Text>
+                            <View style={styles.rowViewStats}>
+                                <Text style={styles.smallerWhiteLabel}>{total_finished_trays.toString()}/{this.reStr(this.state.required_trays)}</Text>
+                                <Text style={styles.smallerRightWhiteLabel}>{tray_percentage}%</Text>
+                            </View>
+                        </View>
+                    </View>
+                );
+            } else {
+                return(null);
+            }
+          }
 
   reStr(val){
         if(val || val==0){
@@ -254,6 +290,22 @@ class HistoryItem extends Component {
             {this.return_error_msg()}
             {this.create_calendar()}
             <View style={styles.rowViewPadding}></View>
+            <View>
+                <View style={styles.rowViewPadding}>
+                    <Text style={styles.flexOneWhiteLabel}>Top Boxes</Text>
+                    <Text style={styles.flexOneWhiteLabel}>Bottom Boxes</Text>
+                </View>
+                <View style={styles.rowViewPadding}>
+                    <TextInput style={styles.flexOneInputMargin} onChangeText={(val) => {this.setState({tops: parseInt(val.replace(/[^0-9]/g, ''))});}}
+                    keyboardType='numeric'
+                    placeholder={'Total Top Boxes'}
+                    value={this.reStr(this.state.tops)}/>
+                    <TextInput style={styles.flexOneInputMargin} onChangeText={(val) => {this.setState({bottoms: parseInt(val.replace(/[^0-9]/g, ''))});}}
+                    keyboardType='numeric'
+                    placeholder={'Total Bottom Boxes'}
+                    value={this.reStr(this.state.bottoms)}/>
+                </View>
+            </View>
             {this.return_tray_stats()}
             <View style={styles.rowViewPadding}></View>
             <View>
